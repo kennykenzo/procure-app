@@ -21,9 +21,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
     initialLocation: '/login',
     refreshListenable: refresh,
     redirect: (context, state) {
-      final isLoggedIn =
-          ref.read(authStateProvider).status == AuthStateEnum.loggedIn;
+      final authState = ref.read(authStateProvider);
+      final authStatus = authState.status;
+      final isLoggedIn = authStatus == AuthStateEnum.loggedIn;
+      final isWaiting = authStatus == AuthStateEnum.waiting;
       final isLoggingIn = state.matchedLocation == '/login';
+
+      // If still waiting for session check, don't redirect yet
+      if (isWaiting) {
+        return null;
+      }
 
       if (!isLoggedIn && !isLoggingIn) return '/login';
       if (isLoggedIn && isLoggingIn) return '/';

@@ -50,8 +50,18 @@ class Graph {
       AmplifyAuthCognito.pluginKey,
     ).fetchAuthSession();
 
-    final accessToken = session.userPoolTokensResult.value.idToken.raw;
-    return "Bearer $accessToken";
+    // Check if userPoolTokensResult is a success before accessing value
+    final tokensResult = session.userPoolTokensResult;
+    // Check if result is not a loading state before accessing value
+    if (tokensResult.runtimeType.toString().contains('Loading')) {
+      throw Exception('Failed to get access token: credentials still loading');
+    }
+    try {
+      final accessToken = tokensResult.value.idToken.raw;
+      return "Bearer $accessToken";
+    } catch (e) {
+      throw Exception('Failed to get access token: $e');
+    }
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
@@ -55,8 +56,18 @@ class AuthService {
         return oldSubAttribute.value;
       }
 
-      String? userId = session.userSubResult.value;
-      return userId;
+      // Check if userSubResult is a success before accessing value
+      final userSubResult = session.userSubResult;
+      // Check if result is not a loading state before accessing value
+      if (userSubResult.runtimeType.toString().contains('Loading')) {
+        return null;
+      }
+      try {
+        return userSubResult.value;
+      } catch (e) {
+        debugPrint('Error accessing userSub: $e');
+        return null;
+      }
     }
     return null;
   }

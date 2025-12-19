@@ -55,9 +55,22 @@ final authStateNotifierProvider = Provider<AuthStateNotifier>((ref) {
 class AuthStateNotifier {
   final Ref ref;
   AuthState _state = const AuthState();
+  static Future<void>? _configurationFuture;
 
   AuthStateNotifier(this.ref) {
-    configureAmplify();
+    // Initialize and check session on startup
+    _initializeAuth();
+  }
+
+  Future<void> _initializeAuth() async {
+    // Don't await in constructor, but store the future
+    _configurationFuture = configureAmplify();
+    // Ensure we wait for configuration and session check
+    try {
+      await _configurationFuture;
+    } catch (e) {
+      debugPrint('Error initializing auth: $e');
+    }
   }
 
   AuthState get state => _state;
@@ -73,21 +86,18 @@ class AuthStateNotifier {
       ref.read(loadingProvider.notifier).state = true;
 
       // Ensure Amplify is configured before using it
-      if (!Amplify.isConfigured) {
-        await configureAmplify();
+      // Wait for any ongoing configuration or configure if needed
+      if (_configurationFuture != null) {
+        await _configurationFuture;
+      } else if (!Amplify.isConfigured) {
+        _configurationFuture = configureAmplify();
+        await _configurationFuture;
       }
 
       // Only sign out if there's an active session
-      try {
-        final session = await Amplify.Auth.fetchAuthSession();
-        if (session.isSignedIn) {
-          await _safeSignOut();
-        }
-      } catch (e) {
-        // If there's no session or Amplify isn't ready, continue
-        debugPrint('No active session to sign out: $e');
-      }
-
+      // Skip this check to avoid credential loading issues - just proceed with sign in
+      // The sign in will handle any existing session automatically
+      await ref.read(authServiceProvider).signOut();
       final stopwatch = Stopwatch();
       stopwatch.start();
       SignInResult res = await ref
@@ -155,8 +165,11 @@ class AuthStateNotifier {
 
   Future<SignOutResult> signOut() async {
     // Ensure Amplify is configured before signing out
-    if (!Amplify.isConfigured) {
-      await configureAmplify();
+    if (_configurationFuture != null) {
+      await _configurationFuture;
+    } else if (!Amplify.isConfigured) {
+      _configurationFuture = configureAmplify();
+      await _configurationFuture;
     }
     return await _safeSignOut();
   }
@@ -237,39 +250,95 @@ class AuthStateNotifier {
   fetchSession() async {
     try {
       final res = await Amplify.Auth.fetchAuthSession();
-      print(res);
+      debugPrint('Session check - isSignedIn: ${res.isSignedIn}');
+
       if (res.isSignedIn) {
-        _updateState(_state.copyWith(status: AuthStateEnum.loggedIn));
+        // Try to get user email if available
+        String? email;
+        try {
+          final attributes = await Amplify.Auth.fetchUserAttributes();
+          for (final attr in attributes) {
+            final key = attr.userAttributeKey.key;
+            if (key == 'email' ||
+                key == AuthUserAttributeKey.email.toString()) {
+              email = attr.value;
+              break;
+            }
+          }
+        } catch (e) {
+          debugPrint('Could not fetch user email: $e');
+        }
+
+        _updateState(
+          _state.copyWith(
+            status: AuthStateEnum.loggedIn,
+            email: email,
+            errorMessage: null,
+          ),
+        );
+        debugPrint('Session restored - user is logged in');
       } else {
         _updateState(_state.copyWith(status: AuthStateEnum.loggedOut));
+        debugPrint('No active session found');
       }
     } on AuthException catch (e, st) {
-      debugPrint(e.message);
+      debugPrint('AuthException fetching session: ${e.message}');
+      debugPrint(st.toString());
+      _updateState(_state.copyWith(status: AuthStateEnum.loggedOut));
+    } catch (e, st) {
+      // Handle credential loading errors
+      debugPrint('Error fetching session: $e');
       debugPrint(st.toString());
       _updateState(_state.copyWith(status: AuthStateEnum.loggedOut));
     }
   }
 
   Future<void> configureAmplify() async {
-    if (!Amplify.isConfigured) {
+    // If configuration is already in progress, wait for it
+    if (_configurationFuture != null) {
+      try {
+        await _configurationFuture;
+        // Even if already configured, check session on refresh
+        if (Amplify.isConfigured) {
+          await fetchSession();
+        }
+        return;
+      } catch (e) {
+        // If previous configuration failed, try again
+        _configurationFuture = null;
+      }
+    }
+
+    // If already configured, just fetch session
+    if (Amplify.isConfigured) {
+      debugPrint("Amplify already configured, fetching session...");
+      await fetchSession();
+      return;
+    }
+
+    // Start new configuration
+    _configurationFuture = _doConfigureAmplify();
+    await _configurationFuture;
+  }
+
+  Future<void> _doConfigureAmplify() async {
+    try {
       AmplifyAuthCognito authPlugin = AmplifyAuthCognito();
       Amplify.addPlugins([authPlugin]);
 
-      try {
-        await Amplify.configure(F.amplifyConfig);
-        await fetchSession();
-        initAuthListener();
-        debugPrint("CONFIGURED AWS");
-      } on AmplifyAlreadyConfiguredException {
-        debugPrint(
-          "Tried to reconfigure Amplify; this can occur when your app restarts on Android.",
-        );
-      } catch (e) {
-        debugPrint("Error configuring Amplify: $e");
-        rethrow;
-      }
-    } else {
-      debugPrint("Amplify already configured");
+      await Amplify.configure(F.amplifyConfig);
+      await fetchSession();
+      initAuthListener();
+      debugPrint("CONFIGURED AWS");
+    } on AmplifyAlreadyConfiguredException {
+      debugPrint(
+        "Tried to reconfigure Amplify; this can occur when your app restarts on Android.",
+      );
+    } catch (e) {
+      debugPrint("Error configuring Amplify: $e");
+      // Clear the future on error so it can be retried
+      _configurationFuture = null;
+      rethrow;
     }
   }
 }

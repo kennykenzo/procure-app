@@ -1,6 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:procurement_scanner/config/amplifyconfiguration.dart';
+import 'package:procurement_scanner/config/aws_config.dart';
 
 enum Flavor { STAGING, PROD, DEV }
 
@@ -63,13 +63,13 @@ class F {
   static String get wsUrl {
     switch (appFlavor) {
       case Flavor.DEV:
-        return "wss://resillio-dev.hasura.app/v1/graphql";
+        return "wss://sourcentry.hasura.app/v1/graphql";
       case Flavor.PROD:
-        return "ws://resillio-dev.hasura.app/v1/graphql";
+        return "ws://sourcentry.hasura.app/v1/graphql";
       case Flavor.STAGING:
-        return "ws://resillio-dev.hasura.app/v1/graphql";
+        return "ws://sourcentry.hasura.app/v1/graphql";
       default:
-        return "wss://resillio-dev.hasura.app/v1/graphql";
+        return "wss://sourcentry.hasura.app/v1/graphql";
     }
   }
 

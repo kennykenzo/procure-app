@@ -68,3 +68,13 @@ const amplifyconfig = {
 
 }''',
 };
+
+  // "storage": {
+  //   "plugins": {
+  //     "awsS3StoragePlugin": {
+  //       "bucket": "resiilio-dev",
+  //       "region": "us-east-2",
+  //       "identityPoolId":"us-east-2:f2218648-0ce4-4fe2-bf9b-c7195260ce11"
+  //     }
+  //   }
+  // }
