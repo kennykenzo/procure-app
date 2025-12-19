@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:procurement_scanner/providers/items_provider.dart';
 import 'package:procurement_scanner/providers/transactions_provider.dart';
 import 'package:procurement_scanner/theme/app_theme.dart';
-import 'package:procurement_scanner/widgets/clay_card.dart';
 import 'package:procurement_scanner/widgets/stat_card.dart';
 import 'package:procurement_scanner/widgets/transaction_history.dart';
 

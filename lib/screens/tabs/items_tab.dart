@@ -5,7 +5,6 @@ import 'package:procurement_scanner/models/item.dart';
 import 'package:procurement_scanner/providers/items_provider.dart';
 import 'package:procurement_scanner/providers/locations_provider.dart';
 import 'package:procurement_scanner/theme/app_theme.dart';
-import 'package:procurement_scanner/widgets/clay_card.dart';
 import 'package:procurement_scanner/widgets/item_card.dart';
 
 /// Items tab content - Redesigned with better visual flow

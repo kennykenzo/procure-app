@@ -39,9 +39,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(isNfc ? 'NFC Tag Scanned' : 'Barcode Scanned'),
         content: SingleChildScrollView(
           child: Column(
@@ -56,10 +54,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                 ),
                 child: SelectableText(
                   code,
-                  style: const TextStyle(
-                    fontFamily: 'SF Mono',
-                    fontSize: 14,
-                  ),
+                  style: const TextStyle(fontFamily: 'SF Mono', fontSize: 14),
                 ),
               ),
               const SizedBox(height: 16),
@@ -99,10 +94,7 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Scan Item'),
-        elevation: 0,
-      ),
+      appBar: AppBar(title: const Text('Scan Product'), elevation: 0),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -114,7 +106,10 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                 // Camera Preview Placeholder
                 Container(
                   height: MediaQuery.of(context).size.height * 0.35,
-                  constraints: const BoxConstraints(minHeight: 280, maxHeight: 400),
+                  constraints: const BoxConstraints(
+                    minHeight: 280,
+                    maxHeight: 400,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(20),
@@ -140,7 +135,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                             ),
                             const SizedBox(height: 8),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 32),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32,
+                              ),
                               child: Text(
                                 'Point camera at barcode or QR code',
                                 textAlign: TextAlign.center,
@@ -290,7 +287,9 @@ class _ScanScreenState extends ConsumerState<ScanScreen> {
                               // Simulate NFC scan
                               Future.delayed(const Duration(seconds: 2), () {
                                 if (mounted) {
-                                  _handleNfcResult('nfc-${DateTime.now().millisecondsSinceEpoch}');
+                                  _handleNfcResult(
+                                    'nfc-${DateTime.now().millisecondsSinceEpoch}',
+                                  );
                                 }
                               });
                             },

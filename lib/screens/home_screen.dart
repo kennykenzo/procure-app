@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:procurement_scanner/theme/app_theme.dart';
 import 'package:procurement_scanner/widgets/floating_bottom_nav_bar.dart';
 import 'package:procurement_scanner/screens/tabs/dashboard_tab.dart';
 import 'package:procurement_scanner/screens/tabs/items_tab.dart';

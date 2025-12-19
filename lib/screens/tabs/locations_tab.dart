@@ -4,7 +4,6 @@ import 'package:procurement_scanner/models/location.dart';
 import 'package:procurement_scanner/providers/items_provider.dart';
 import 'package:procurement_scanner/providers/locations_provider.dart';
 import 'package:procurement_scanner/theme/app_theme.dart';
-import 'package:procurement_scanner/widgets/clay_card.dart';
 
 /// Locations tab content - Redesigned with modern card layout
 class LocationsTab extends ConsumerWidget {

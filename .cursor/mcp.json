@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "hasura": {
+      "command": "node",
+      "args": [
+        "/Users/emmanuel/Desktop/Projects/hasura-mcp/build/index.js"
+      ],
+      "env": {
+        "HASURA_ENDPOINT": "https://sourcentry.hasura.app/v1/graphql",
+        "HASURA_PROJECT_PATH": "/Users/emmanuel/Desktop/Projects/Xhuma/xhuma-bursary-migrations§",
+        "POSTGRES_CONNECTION_STRING": "postgres://neondb_owner:skPfzibN1F6u@shy-frog-71003643.us-west-2.aws.neon.tech/sourcentry_db_4793247?options=project%3Dshy-frog-71003643&sslmode=require",
+        "PGSSLMODE": "require",
+        "LOG_LEVEL": "INFO",
+        "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+      }
+    }
+  }
+}
