@@ -4,6 +4,7 @@ import 'package:procurement_scanner/models/item.dart';
 import 'package:procurement_scanner/models/location.dart';
 import 'package:procurement_scanner/providers/locations_provider.dart';
 import 'package:procurement_scanner/theme/app_theme.dart';
+import 'package:procurement_scanner/widgets/clay_card.dart';
 
 /// Item card widget for displaying item information
 class ItemCard extends ConsumerWidget {
@@ -16,6 +17,7 @@ class ItemCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final locationsAsync = ref.watch(locationsProvider);
+    final primary = theme.colorScheme.primary;
 
     return locationsAsync.when(
       data: (locations) {
@@ -24,150 +26,127 @@ class ItemCard extends ConsumerWidget {
           orElse: () => Location(id: item.currentLocation, name: 'Unknown'),
         );
 
-        return Card(
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-            side: BorderSide(
-              color: theme.dividerColor.withValues(alpha: 0.05),
-              width: 0.5,
-            ),
-          ),
-          shadowColor: Colors.black.withValues(alpha: 0.08),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: onTap,
-              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Header Row
-                    Row(
+        return ClayCard(
+          onTap: onTap,
+          borderRadius: 24,
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header Row
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.name,
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: -0.3,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              if (item.materialCode.isNotEmpty) ...[
-                                const SizedBox(height: 4),
-                                Text(
-                                  item.materialCode,
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: AppTheme.secondaryLabel,
-                                    fontFamily: 'SF Mono',
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ],
+                        Text(
+                          item.name,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.4,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(width: 12),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppTheme.primaryBlack,
-                            borderRadius: BorderRadius.circular(
-                              AppTheme.borderRadiusXLarge,
-                            ),
-                          ),
-                          child: Text(
-                            '${item.quantity} ${item.unitOfMeasure ?? 'pcs'}',
+                        if (item.materialCode.isNotEmpty) ...[
+                          const SizedBox(height: 6),
+                          Text(
+                            item.materialCode,
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: AppTheme.primaryWhite,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
-                              letterSpacing: -0.2,
+                              color: AppTheme.darkGray.withValues(alpha: 0.75),
+                              fontFamily: 'SF Mono',
+                              fontSize: 12,
                             ),
                           ),
-                        ),
+                        ],
                       ],
                     ),
-
-                    // Category and Office Stock Badge
-                    if (item.category != null || item.isOfficeStock) ...[
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          if (item.category != null)
-                            _buildCategoryChip(context, item.category!),
-                          if (item.isOfficeStock)
-                            _buildOfficeStockBadge(context),
-                        ],
-                      ),
-                    ],
-
-                    // Location
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.location_on_outlined,
-                          size: 16,
-                          color: AppTheme.secondaryLabel,
-                        ),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            location.name,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: AppTheme.secondaryLabel,
-                              fontSize: 13,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
+                  ),
+                  const SizedBox(width: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
                     ),
-
-                    // Barcode/NFC Badges
-                    if (item.barcode != null || item.nfcId != null) ...[
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: [
-                          if (item.barcode != null)
-                            _buildBadge(
-                              context,
-                              Icons.qr_code_2_outlined,
-                              'Barcode',
-                              size: 12,
-                            ),
-                          if (item.nfcId != null)
-                            _buildBadge(
-                              context,
-                              Icons.nfc_outlined,
-                              'NFC',
-                              size: 12,
-                            ),
-                        ],
+                    decoration: BoxDecoration(
+                      color: primary,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      '${item.quantity} ${item.unitOfMeasure ?? 'pcs'}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppTheme.primaryWhite,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                        letterSpacing: -0.2,
                       ),
-                    ],
+                    ),
+                  ),
+                ],
+              ),
+
+              // Category and Office Stock Badge
+              if (item.category != null || item.isOfficeStock) ...[
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    if (item.category != null)
+                      _buildCategoryChip(context, item.category!),
+                    if (item.isOfficeStock) _buildOfficeStockBadge(context),
                   ],
                 ),
+              ],
+
+              // Location
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(
+                    Icons.location_on_outlined,
+                    size: 16,
+                    color: AppTheme.darkGray.withValues(alpha: 0.7),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      location.name,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppTheme.darkGray.withValues(alpha: 0.8),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
-            ),
+
+              // Barcode/NFC Badges
+              if (item.barcode != null || item.nfcId != null) ...[
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    if (item.barcode != null)
+                      _buildBadge(
+                        context,
+                        Icons.qr_code_2_outlined,
+                        'Barcode',
+                        size: 12,
+                      ),
+                    if (item.nfcId != null)
+                      _buildBadge(context, Icons.nfc_outlined, 'NFC', size: 12),
+                  ],
+                ),
+              ],
+            ],
           ),
         );
       },

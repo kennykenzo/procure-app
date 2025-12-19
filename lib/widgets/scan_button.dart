@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:procurement_scanner/theme/app_theme.dart';
+import 'package:procurement_scanner/widgets/clay_card.dart';
 
 /// Apple-style scan button widget
 class ScanButton extends StatelessWidget {
@@ -17,81 +18,81 @@ class ScanButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
 
     if (isLarge) {
-      return Card(
-        elevation: 0,
-        margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-          side: BorderSide(
-            color: theme.dividerColor.withValues(alpha: 0.05),
-            width: 0.5,
-          ),
-        ),
-        shadowColor: Colors.black.withValues(alpha: 0.08),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-            splashColor: AppTheme.primaryBlack.withValues(alpha: 0.1),
-            highlightColor: AppTheme.primaryBlack.withValues(alpha: 0.05),
-            child: Container(
+      return ClayCard(
+        onTap: onTap,
+        borderRadius: 28,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+        child: Row(
+          children: [
+            Container(
+              width: 86,
+              height: 86,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(
-                  AppTheme.borderRadiusMedium,
+                gradient: LinearGradient(
+                  colors: [
+                    primary.withValues(alpha: 0.95),
+                    AppTheme.claySecondary.withValues(alpha: 0.95),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
+                borderRadius: BorderRadius.circular(24),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              child: const Icon(
+                Icons.qr_code_scanner_rounded,
+                size: 44,
+                color: AppTheme.primaryWhite,
+              ),
+            ),
+            const SizedBox(width: 18),
+            Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 96,
-                    height: 96,
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryBlack.withValues(alpha: 0.08),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
-                          blurRadius: 16,
-                          offset: const Offset(0, 6),
-                          spreadRadius: 0,
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.qr_code_scanner_rounded,
-                      size: 48,
-                      color: AppTheme.primaryBlack,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
                   Text(
                     label ?? 'Scan Item',
                     style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 22,
-                      letterSpacing: -0.5,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 20,
+                      letterSpacing: -0.6,
                       color: theme.colorScheme.onSurface,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 6),
                   Text(
-                    'Barcode or NFC',
+                    'Barcode • QR • NFC',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.secondaryLabel,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
+                      color: AppTheme.darkGray.withValues(alpha: 0.8),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
                       letterSpacing: -0.2,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: primary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Text(
+                      'Tap to start',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: primary,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.1,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
+          ],
         ),
       );
     }

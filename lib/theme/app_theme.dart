@@ -36,6 +36,14 @@ class AppTheme {
   static const Color secondaryLabel = Color(0xFF666666); // Updated to darkGray
   static const Color tertiaryLabel = Color(0x4D000000);
 
+  // Claymorphism palette (inspired by soft-tinted backgrounds and rounded cards)
+  static const Color clayBackground = Color(0xFFF2F0FF);
+  static const Color claySurface = Color(0xFFF8F7FF);
+  static const Color clayPrimary = Color(0xFF6C63FF);
+  static const Color claySecondary = Color(0xFF6EC6FF);
+  static const Color clayPink = Color(0xFFFF6FAE);
+  static const Color clayOrange = Color(0xFFFFB86B);
+
   // Border radius constants
   static const double borderRadiusSmall = 12.0;
   static const double borderRadiusMedium = 16.0;
@@ -49,18 +57,18 @@ class AppTheme {
       brightness: Brightness.light,
       fontFamily: 'SF Pro Display',
       colorScheme: ColorScheme.light(
-        primary: primaryBlack,
-        secondary: secondaryBlue,
+        primary: clayPrimary,
+        secondary: claySecondary,
         error: errorRed,
-        surface: primaryWhite,
+        surface: claySurface,
         onSurface: label,
         onPrimary: primaryWhite,
       ),
-      scaffoldBackgroundColor: lightGray,
+      scaffoldBackgroundColor: clayBackground,
       appBarTheme: const AppBarTheme(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: lightGray,
+        backgroundColor: clayBackground,
         foregroundColor: label,
         titleTextStyle: TextStyle(
           color: label,
@@ -75,14 +83,14 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadiusMedium),
         ),
-        color: primaryWhite,
+        color: claySurface,
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         shadowColor: Colors.black.withValues(alpha: 0.08),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,
-          backgroundColor: primaryBlack,
+          backgroundColor: clayPrimary,
           foregroundColor: primaryWhite,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
@@ -98,7 +106,7 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: primaryBlack,
+          foregroundColor: clayPrimary,
           textStyle: const TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w400,
@@ -109,7 +117,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: mediumGray.withValues(alpha: 0.3),
+        fillColor: claySurface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadiusLarge),
           borderSide: BorderSide.none,
@@ -128,8 +136,8 @@ class AppTheme {
         contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: mediumGray.withValues(alpha: 0.3),
-        selectedColor: primaryBlack,
+        backgroundColor: claySurface,
+        selectedColor: clayPrimary,
         labelStyle: const TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.w500,

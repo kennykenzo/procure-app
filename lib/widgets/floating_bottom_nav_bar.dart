@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:procurement_scanner/theme/app_theme.dart';
+import 'package:procurement_scanner/widgets/clay_card.dart';
 
 /// Floating bottom navigation bar with pill-shaped selected indicator
 class FloatingBottomNavBar extends StatelessWidget {
@@ -17,48 +18,34 @@ class FloatingBottomNavBar extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        child: Container(
-          height: 64,
-          decoration: BoxDecoration(
-            color: AppTheme.primaryBlack,
-            borderRadius: BorderRadius.circular(AppTheme.borderRadiusXLarge),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
-                spreadRadius: 0,
-              ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.08),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _NavItem(
-                icon: Icons.home_rounded,
-                label: 'Home',
-                isSelected: selectedIndex == 0,
-                onTap: () => onTap(0),
-              ),
-              _NavItem(
-                icon: Icons.inventory_2_rounded,
-                label: 'Items',
-                isSelected: selectedIndex == 1,
-                onTap: () => onTap(1),
-              ),
-              _NavItem(
-                icon: Icons.location_on_rounded,
-                label: 'Locations',
-                isSelected: selectedIndex == 2,
-                onTap: () => onTap(2),
-              ),
-            ],
+        child: SizedBox(
+          height: 68,
+          child: ClayCard(
+            borderRadius: AppTheme.borderRadiusXLarge,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _NavItem(
+                  icon: Icons.home_rounded,
+                  label: 'Home',
+                  isSelected: selectedIndex == 0,
+                  onTap: () => onTap(0),
+                ),
+                _NavItem(
+                  icon: Icons.inventory_2_rounded,
+                  label: 'Items',
+                  isSelected: selectedIndex == 1,
+                  onTap: () => onTap(1),
+                ),
+                _NavItem(
+                  icon: Icons.location_on_rounded,
+                  label: 'Locations',
+                  isSelected: selectedIndex == 2,
+                  onTap: () => onTap(2),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -83,14 +70,15 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusXLarge),
-        splashColor: AppTheme.primaryWhite.withValues(alpha: 0.1),
-        highlightColor: AppTheme.primaryWhite.withValues(alpha: 0.05),
+        splashColor: primary.withValues(alpha: 0.12),
+        highlightColor: primary.withValues(alpha: 0.06),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOutCubic,
@@ -99,7 +87,7 @@ class _NavItem extends StatelessWidget {
             vertical: isSelected ? 12 : 10,
           ),
           decoration: BoxDecoration(
-            color: isSelected ? AppTheme.primaryWhite : Colors.transparent,
+            color: isSelected ? primary : Colors.transparent,
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusXLarge),
           ),
           child: Row(
@@ -110,15 +98,15 @@ class _NavItem extends StatelessWidget {
                 icon,
                 size: isSelected ? 20 : 22,
                 color: isSelected
-                    ? AppTheme.primaryBlack
-                    : AppTheme.primaryWhite.withValues(alpha: 0.7),
+                    ? AppTheme.primaryWhite
+                    : AppTheme.primaryBlack.withValues(alpha: 0.55),
               ),
               if (isSelected) ...[
                 const SizedBox(width: 8),
                 Text(
                   label,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.primaryBlack,
+                    color: AppTheme.primaryWhite,
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                     letterSpacing: -0.2,

@@ -6,6 +6,7 @@ import 'package:procurement_scanner/providers/items_provider.dart';
 import 'package:procurement_scanner/providers/locations_provider.dart';
 import 'package:procurement_scanner/theme/app_theme.dart';
 import 'package:intl/intl.dart';
+import 'package:procurement_scanner/widgets/clay_card.dart';
 
 /// Transaction history widget
 class TransactionHistory extends ConsumerWidget {
@@ -58,151 +59,128 @@ class TransactionHistory extends ConsumerWidget {
                       : null;
 
                   final txnColor = _getTransactionColor(txn.type);
-                  final isDark = theme.brightness == Brightness.dark;
 
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      side: BorderSide(
-                        color: isDark
-                            ? Colors.white.withValues(alpha: 0.06)
-                            : theme.dividerColor.withValues(alpha: 0.04),
-                        width: 0.5,
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: ClayCard(
+                      borderRadius: 22,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
                       ),
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(16),
-                        splashColor: txnColor.withValues(alpha: 0.08),
-                        highlightColor: txnColor.withValues(alpha: 0.04),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
+                      onTap: () {},
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: txnColor.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              _getTransactionIcon(txn.type),
+                              color: txnColor,
+                              size: 22,
+                            ),
                           ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  color: txnColor.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(12),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.name,
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    letterSpacing: -0.3,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                child: Icon(
-                                  _getTransactionIcon(txn.type),
-                                  color: txnColor,
-                                  size: 22,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item.name,
-                                      style: theme.textTheme.bodyLarge
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                            letterSpacing: -0.3,
-                                          ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    if (txn.materialCode != null) ...[
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        txn.materialCode!,
-                                        style: theme.textTheme.bodySmall
-                                            ?.copyWith(
-                                              color: AppTheme.secondaryLabel,
-                                              fontFamily: 'SF Mono',
-                                              fontSize: 12,
-                                              letterSpacing: 0.2,
-                                            ),
-                                      ),
-                                    ],
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      _getTransactionDescription(
-                                        txn,
-                                        fromLocation,
-                                        toLocation,
-                                      ),
-                                      style: theme.textTheme.bodySmall
-                                          ?.copyWith(
-                                            fontSize: 14,
-                                            height: 1.3,
-                                            letterSpacing: -0.1,
-                                          ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    if (txn.remarks != null) ...[
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        txn.remarks!,
-                                        style: theme.textTheme.bodySmall
-                                            ?.copyWith(
-                                              color: AppTheme.secondaryLabel,
-                                              fontStyle: FontStyle.italic,
-                                              fontSize: 13,
-                                            ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      DateFormat(
-                                        'MMM d, y • h:mm a',
-                                      ).format(txn.timestamp),
-                                      style: theme.textTheme.bodySmall
-                                          ?.copyWith(
-                                            color: AppTheme.secondaryLabel,
-                                            fontSize: 12,
-                                            letterSpacing: -0.1,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
+                                if (txn.materialCode != null) ...[
+                                  const SizedBox(height: 4),
                                   Text(
-                                    '${txn.quantity}',
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 18,
-                                      color: txnColor,
-                                      letterSpacing: -0.5,
+                                    txn.materialCode!,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: AppTheme.secondaryLabel,
+                                      fontFamily: 'SF Mono',
+                                      fontSize: 12,
+                                      letterSpacing: 0.2,
                                     ),
                                   ),
-                                  if (txn.unitOfMeasure != null) ...[
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      txn.unitOfMeasure!,
-                                      style: theme.textTheme.bodySmall
-                                          ?.copyWith(
-                                            color: AppTheme.secondaryLabel,
-                                            fontSize: 12,
-                                            letterSpacing: -0.1,
-                                          ),
-                                    ),
-                                  ],
                                 ],
+                                const SizedBox(height: 6),
+                                Text(
+                                  _getTransactionDescription(
+                                    txn,
+                                    fromLocation,
+                                    toLocation,
+                                  ),
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    fontSize: 14,
+                                    height: 1.3,
+                                    letterSpacing: -0.1,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                if (txn.remarks != null) ...[
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    txn.remarks!,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: AppTheme.secondaryLabel,
+                                      fontStyle: FontStyle.italic,
+                                      fontSize: 13,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                                const SizedBox(height: 6),
+                                Text(
+                                  DateFormat(
+                                    'MMM d, y • h:mm a',
+                                  ).format(txn.timestamp),
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: AppTheme.secondaryLabel,
+                                    fontSize: 12,
+                                    letterSpacing: -0.1,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                '${txn.quantity}',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 18,
+                                  color: txnColor,
+                                  letterSpacing: -0.5,
+                                ),
                               ),
+                              if (txn.unitOfMeasure != null) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  txn.unitOfMeasure!,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: AppTheme.secondaryLabel,
+                                    fontSize: 12,
+                                    letterSpacing: -0.1,
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   );
